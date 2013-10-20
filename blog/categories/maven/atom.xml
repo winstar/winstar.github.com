@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Josh]]></title>
-  <link href="http://Winstar.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: maven | Josh]]></title>
+  <link href="http://Winstar.github.io/blog/categories/maven/atom.xml" rel="self"/>
   <link href="http://Winstar.github.io/"/>
   <updated>2013-10-20T17:27:27+08:00</updated>
   <id>http://Winstar.github.io/</id>
@@ -23,9 +23,8 @@
 <h2>路径变更</h2>
 
 <p>主要将src/main/webapp移至根目录的web，之后class文件和资源都会拷贝到这里作为部署目录。
-我这里的conf文件夹是一些需要配置的文件。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+我这里的conf文件夹是一些需要配置的文件。
+<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -41,23 +40,28 @@
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;build>
-</span><span class='line'>  &lt;finalName>……&lt;/finalName>
-</span><span class='line'>  &lt;sourceDirectory>src/main/java&lt;/sourceDirectory>
-</span><span class='line'>  &lt;resources>
-</span><span class='line'>      &lt;resource>
-</span><span class='line'>          &lt;directory>src/main/resources&lt;/directory>
-</span><span class='line'>      &lt;/resource>
-</span><span class='line'>      &lt;resource>
-</span><span class='line'>          &lt;directory>conf&lt;/directory>
-</span><span class='line'>      &lt;/resource>
-</span><span class='line'>  &lt;/resources>
-</span><span class='line'>  &lt;outputDirectory>web/WEB-INF/classes&lt;/outputDirectory>
-</span><span class='line'>  &lt;testOutputDirectory>web/WEB-INF/classes&lt;/testOutputDirectory>
-</span><span class='line'>  &lt;plugins>
-</span><span class='line'>  &lt;/plugins>
-</span><span class='line'>&lt;/build></span></code></pre></td></tr></table></div></figure>
-
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;build>&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;pre>&lt;code>&lt;finalName&gt;……&lt;/finalName&gt;
+</span><span class='line'>&lt;sourceDirectory&gt;src/main/java&lt;/sourceDirectory&gt;
+</span><span class='line'>&lt;resources&gt;
+</span><span class='line'>    &lt;resource&gt;
+</span><span class='line'>        &lt;directory&gt;src/main/resources&lt;/directory&gt;
+</span><span class='line'>    &lt;/resource&gt;
+</span><span class='line'>    &lt;resource&gt;
+</span><span class='line'>        &lt;directory&gt;conf&lt;/directory&gt;
+</span><span class='line'>    &lt;/resource&gt;
+</span><span class='line'>&lt;/resources&gt;
+</span><span class='line'>&lt;outputDirectory&gt;web/WEB-INF/classes&lt;/outputDirectory&gt;
+</span><span class='line'>&lt;testOutputDirectory&gt;web/WEB-INF/classes&lt;/testOutputDirectory&gt;
+</span><span class='line'>&lt;plugins&gt;
+</span><span class='line'>&lt;/plugins&gt;
+</span><span class='line'>&lt;/code>&lt;/pre>
+</span><span class='line'>
+</span><span class='line'>&lt;p>&lt;/build></span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <h2>Dependency</h2>
 

@@ -7,8 +7,7 @@
 	<meta name="author" content="Josh Wang">
 
 	
-	<meta name="description" content=" Blog Archives
-">
+	<meta name="description" content="使用maven已经好长一段时间了，部署项目一向有打包这一步。在新公司，之前的项目都是使用ant编译的，然后使用resin+apache运行，这个过程不需要用到mvn package。当前你也可以先打包再手动解压，之前我也是这么做的，下面说说另一种方法，我们只执行mvn &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +78,184 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/10/20/maven-compile-zi-ding-yi/">
+		
+			Maven Compile 自定义</a>
+	</h2>
+	<div class="entry-content">
+		<p>使用maven已经好长一段时间了，部署项目一向有打包这一步。在新公司，之前的项目都是使用ant编译的，然后使用resin+apache运行，这个过程不需要用到mvn package。当前你也可以先打包再手动解压，之前我也是这么做的，下面说说另一种方法，我们只执行mvn compile就完成一个可部署的web目录。&lt;!– more –></p>
+
+<h2>路径变更</h2>
+
+<p>主要将src/main/webapp移至根目录的web，之后class文件和资源都会拷贝到这里作为部署目录。
+我这里的conf文件夹是一些需要配置的文件。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;build>
+</span><span class='line'>  &lt;finalName>……&lt;/finalName>
+</span><span class='line'>  &lt;sourceDirectory>src/main/java&lt;/sourceDirectory>
+</span><span class='line'>  &lt;resources>
+</span><span class='line'>      &lt;resource>
+</span><span class='line'>          &lt;directory>src/main/resources&lt;/directory>
+</span><span class='line'>      &lt;/resource>
+</span><span class='line'>      &lt;resource>
+</span><span class='line'>          &lt;directory>conf&lt;/directory>
+</span><span class='line'>      &lt;/resource>
+</span><span class='line'>  &lt;/resources>
+</span><span class='line'>  &lt;outputDirectory>web/WEB-INF/classes&lt;/outputDirectory>
+</span><span class='line'>  &lt;testOutputDirectory>web/WEB-INF/classes&lt;/testOutputDirectory>
+</span><span class='line'>  &lt;plugins>
+</span><span class='line'>  &lt;/plugins>
+</span><span class='line'>&lt;/build></span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Dependency</h2>
+
+<p>默认的依赖项拷贝过程是在package阶段执行的，但通过下面的配置，在执行mvn compile阶段就能拷贝了，主要依赖<code>&lt;phase&gt;compile&lt;/phase&gt;</code>,将copy-dependencies过程依附再compile阶段。lib的拷贝路径可通过<code>&lt;outputDirectory&gt;lib&lt;/outputDirectory&gt;</code>，一般放在WEB-INF下，这里我把它放在根目录，因为resin可以指定lib路径的。</p>
+
+<pre><code>&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.8&lt;/version&gt;
+    &lt;executions&gt;    
+        &lt;execution&gt;
+            &lt;id&gt;copy-dependencies&lt;/id&gt; 
+            &lt;phase&gt;compile&lt;/phase&gt; 
+            &lt;goals&gt; 
+                &lt;goal&gt;copy-dependencies&lt;/goal&gt; 
+            &lt;/goals&gt; 
+            &lt;configuration&gt; 
+                &lt;outputDirectory&gt;lib&lt;/outputDirectory&gt;
+                &lt;excludeTransitive&gt;false&lt;/excludeTransitive&gt; 
+                &lt;stripVersion&gt;true&lt;/stripVersion&gt; 
+            &lt;/configuration&gt; 
+        &lt;/execution&gt;   
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>到目前为止，已完成部署的自定义，在服务器上用svn checkout代码，执行mvn compile就OK了</p>
+
+<h2>Jetty:run</h2>
+
+<p>在本地测试，我一般用maven-jetty-plugin，上面改了很多路径，jetty:run已经跑不起了，下面是我的jetty配置。主要改了<code>&lt;webAppSourceDirectory&gt;web&lt;/webAppSourceDirectory&gt;</code> 和 <code>&lt;directory&gt;web/WEB-INF&lt;/directory&gt;</code></p>
+
+<pre><code>&lt;plugin&gt;
+    &lt;groupId&gt;org.mortbay.jetty&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-jetty-plugin&lt;/artifactId&gt;
+    &lt;version&gt;6.1.26&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;webAppSourceDirectory&gt;web&lt;/webAppSourceDirectory&gt;
+        &lt;contextPath&gt;/&lt;/contextPath&gt;
+        &lt;scanIntervalSeconds&gt;3&lt;/scanIntervalSeconds&gt;
+        &lt;connectors&gt;
+            &lt;connector implementation="org.mortbay.jetty.nio.SelectChannelConnector"&gt;
+                &lt;port&gt;80&lt;/port&gt;
+            &lt;/connector&gt;
+        &lt;/connectors&gt;
+        &lt;scanTargetPatterns&gt;
+            &lt;scanTargetPattern&gt;
+                &lt;directory&gt;web/WEB-INF&lt;/directory&gt;
+                &lt;excludes&gt;
+                    &lt;exclude&gt;**/*.jsp&lt;/exclude&gt;
+                &lt;/excludes&gt;
+                &lt;includes&gt;
+                    &lt;include&gt;**/*.properties&lt;/include&gt;
+                    &lt;include&gt;**/*.xml&lt;/include&gt;
+                &lt;/includes&gt;
+            &lt;/scanTargetPattern&gt;
+        &lt;/scanTargetPatterns&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>要让本地测试环境正常运行起来，还要把之前的dependency注释掉，将类盒资源输出还原成，如下:
+<code>&lt;outputDirectory&gt;target/classes&lt;/outputDirectory&gt;</code>
+这下应该能跑起来了。</p>
+
+<h2>maven编码</h2>
+
+<p>maven2 方式:</p>
+
+<pre><code>&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.3.2&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;source&gt;1.6&lt;/source&gt;
+        &lt;target&gt;1.6&lt;/target&gt;
+        &lt;encoding&gt;GBK&lt;/encoding&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.6&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;encoding&gt;GBK&lt;/encoding&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>maven3 方式:</p>
+
+<pre><code>&lt;properties&gt;
+    &lt;project.build.sourceEncoding&gt;GBK&lt;/project.build.sourceEncoding&gt;
+    &lt;project.reporting.outputEncoding&gt;GBK&lt;/project.reporting.outputEncoding&gt; 
+&lt;/properties&gt;
+</code></pre>
+
+<p>一般都指定一下：window下不指定编码也不会乱码，但在Linux环境下，maven默认是UTF-8编译（可以改变maven默认编码，不建议），改变编码后没忘了clean一下。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-20T14:51:00+08:00" pubdate data-updated="true">Oct 20<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/maven/'>maven</a>
+
+
+</div>
+	
+</div>
+</article>
 
 <nav id="pagenavi">
     
