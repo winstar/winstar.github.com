@@ -4,7 +4,7 @@
   <title><![CDATA[Category: maven | Josh's Blog]]></title>
   <link href="http://Winstar.github.io/blog/categories/maven/atom.xml" rel="self"/>
   <link href="http://Winstar.github.io/"/>
-  <updated>2013-10-20T20:43:30+08:00</updated>
+  <updated>2013-10-28T16:01:11+08:00</updated>
   <id>http://Winstar.github.io/</id>
   <author>
     <name><![CDATA[Josh Wang]]></name>
@@ -18,7 +18,10 @@
     <link href="http://Winstar.github.io/blog/2013/10/20/maven-compile-zi-ding-yi/"/>
     <updated>2013-10-20T14:51:00+08:00</updated>
     <id>http://Winstar.github.io/blog/2013/10/20/maven-compile-zi-ding-yi</id>
-    <content type="html"><![CDATA[<p>使用maven已经好长一段时间了，部署项目一向有打包这一步。在新公司，之前的项目都是使用ant编译的，然后使用resin+apache运行，这个过程不需要用到mvn package。当前你也可以先打包再手动解压，之前我也是这么做的，下面说说另一种方法，我们只执行mvn compile就完成一个可部署的web目录。<!--more--></p>
+    <content type="html"><![CDATA[<p>使用maven已经好长一段时间了，部署项目一向有打包这一步。在新公司，之前的项目都是使用ant编译的，然后使用resin+apache运行，这个过程不需要用到mvn package。当前你也可以先打包再手动解压，之前我也是这么做的，下面说说另一种方法，我们只执行mvn compile就完成一个可部署的web目录。</p>
+
+<!--more-->
+
 
 <h2>路径变更</h2>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Josh's Blog]]></title>
   <link href="http://Winstar.github.io/atom.xml" rel="self"/>
   <link href="http://Winstar.github.io/"/>
-  <updated>2013-10-20T20:43:30+08:00</updated>
+  <updated>2013-10-28T16:01:11+08:00</updated>
   <id>http://Winstar.github.io/</id>
   <author>
     <name><![CDATA[Josh Wang]]></name>
@@ -14,11 +14,67 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Mac 10.9 Mavericks下使用mod_jk]]></title>
+    <link href="http://Winstar.github.io/blog/2013/10/28/mac-10-dot-9-mavericksxia-shi-yong-mod-jk/"/>
+    <updated>2013-10-28T15:32:00+08:00</updated>
+    <id>http://Winstar.github.io/blog/2013/10/28/mac-10-dot-9-mavericksxia-shi-yong-mod-jk</id>
+    <content type="html"><![CDATA[<p>mac os更新到10.9后，之前正常使用的apche+tomcat环境不能正常运作，mod_jk.so异常，需要对其进行重新编译。</p>
+
+<!--more-->
+
+
+<h2>安装Xcode</h2>
+
+<p>完成Xcode 5.0的安装，然后执行:
+xcode-select &mdash;install, 安装command tools</p>
+
+<h2>创建链接</h2>
+
+<p>默认链接和系统有些不一样</p>
+
+<p><code>sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain /Applications/Xcode.app/Contents/Developer/Toolchains/OSX10.9.xctoolchai</code></p>
+
+<h2>下载源码</h2>
+
+<p><a href="http://mirror.bit.edu.cn/apache//tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.37-src.tar.gz">http://mirror.bit.edu.cn/apache//tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.37-src.tar.gz</a></p>
+
+<h2>更改代码</h2>
+
+<p>找到/native/common/jk_map.c，由于strcpy机制变了，需要将其替换</p>
+
+<p><code>strcpy(buf, rc)</code>
+替换为
+<code>memmove(buf, rc, len + 1)</code></p>
+
+<h2>编译</h2>
+
+<p>进入native目录，分别执行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>./configure CFLAGS=&#39;-arch x86_64&#39; APXSLDFLAGS=&#39;-arch x86_64&#39; --with-apxs=/usr/sbin/apxs
+</span><span class='line'>make
+</span><span class='line'>sudo make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>此时mod_jk.so文件已在/usr/libexec/apache2/mod_jk.so默认目录</p>
+
+<p>参考:
+<a href="https://gist.github.com/jclausen/7121183">https://gist.github.com/jclausen/7121183</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[maven compile 自定义]]></title>
     <link href="http://Winstar.github.io/blog/2013/10/20/maven-compile-zi-ding-yi/"/>
     <updated>2013-10-20T14:51:00+08:00</updated>
     <id>http://Winstar.github.io/blog/2013/10/20/maven-compile-zi-ding-yi</id>
-    <content type="html"><![CDATA[<p>使用maven已经好长一段时间了，部署项目一向有打包这一步。在新公司，之前的项目都是使用ant编译的，然后使用resin+apache运行，这个过程不需要用到mvn package。当前你也可以先打包再手动解压，之前我也是这么做的，下面说说另一种方法，我们只执行mvn compile就完成一个可部署的web目录。<!--more--></p>
+    <content type="html"><![CDATA[<p>使用maven已经好长一段时间了，部署项目一向有打包这一步。在新公司，之前的项目都是使用ant编译的，然后使用resin+apache运行，这个过程不需要用到mvn package。当前你也可以先打包再手动解压，之前我也是这么做的，下面说说另一种方法，我们只执行mvn compile就完成一个可部署的web目录。</p>
+
+<!--more-->
+
 
 <h2>路径变更</h2>
 

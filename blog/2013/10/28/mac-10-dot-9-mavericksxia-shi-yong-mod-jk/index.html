@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Josh's Blog</title>
+  <title>Mac 10.9 Mavericks下使用mod_jk - Josh's Blog</title>
   <meta name="author" content="Josh Wang">
 
   
-  <meta name="description" content="mac os更新到10.9后，之前正常使用的apche+tomcat环境不能正常运作，mod_jk.so异常，需要对其进行重新编译。 ">
+  <meta name="description" content="mac os更新到10.9后，之前正常使用的apche+tomcat环境不能正常运作，mod_jk.so异常，需要对其进行重新编译。 安装Xcode 完成Xcode 5.0的安装，然后执行:
+xcode-select &mdash;install, 安装command tools 创建链接 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://Winstar.github.io">
+  <link rel="canonical" href="http://Winstar.github.io/blog/2013/10/28/mac-10-dot-9-mavericksxia-shi-yong-mod-jk">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Josh's Blog" type="application/atom+xml">
@@ -66,15 +67,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/28/mac-10-dot-9-mavericksxia-shi-yong-mod-jk/">Mac 10.9 Mavericks下使用mod_jk</a></h1>
+      <h1 class="entry-title">Mac 10.9 Mavericks下使用mod_jk</h1>
     
     
       <p class="meta">
@@ -97,29 +95,62 @@
   </header>
 
 
-  <div class="entry-content"><p>mac os更新到10.9后，之前正常使用的apche+tomcat环境不能正常运作，mod_jk.so异常，需要对其进行重新编译。</p>
+<div class="entry-content"><p>mac os更新到10.9后，之前正常使用的apche+tomcat环境不能正常运作，mod_jk.so异常，需要对其进行重新编译。</p>
 
+<!--more-->
+
+
+<h2>安装Xcode</h2>
+
+<p>完成Xcode 5.0的安装，然后执行:
+xcode-select &mdash;install, 安装command tools</p>
+
+<h2>创建链接</h2>
+
+<p>默认链接和系统有些不一样</p>
+
+<p><code>sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain /Applications/Xcode.app/Contents/Developer/Toolchains/OSX10.9.xctoolchai</code></p>
+
+<h2>下载源码</h2>
+
+<p><a href="http://mirror.bit.edu.cn/apache//tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.37-src.tar.gz">http://mirror.bit.edu.cn/apache//tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.37-src.tar.gz</a></p>
+
+<h2>更改代码</h2>
+
+<p>找到/native/common/jk_map.c，由于strcpy机制变了，需要将其替换</p>
+
+<p><code>strcpy(buf, rc)</code>
+替换为
+<code>memmove(buf, rc, len + 1)</code></p>
+
+<h2>编译</h2>
+
+<p>进入native目录，分别执行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>./configure CFLAGS=&#39;-arch x86_64&#39; APXSLDFLAGS=&#39;-arch x86_64&#39; --with-apxs=/usr/sbin/apxs
+</span><span class='line'>make
+</span><span class='line'>sudo make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>此时mod_jk.so文件已在/usr/libexec/apache2/mod_jk.so默认目录</p>
+
+<p>参考:
+<a href="https://gist.github.com/jclausen/7121183">https://gist.github.com/jclausen/7121183</a></p>
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/10/28/mac-10-dot-9-mavericksxia-shi-yong-mod-jk/">Read on &rarr;</a>
-    </footer>
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/20/maven-compile-zi-ding-yi/">Maven Compile 自定义</a></h1>
-    
-    
-      <p class="meta">
-        
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Josh Wang</span></span>
+
+      
 
 
 
@@ -131,32 +162,30 @@
   
 
 
-<time datetime="2013-10-20T14:51:00+08:00" pubdate data-updated="true">Oct 20<span>th</span>, 2013</time>
-        
-      </p>
+<time datetime="2013-10-28T15:32:00+08:00" pubdate data-updated="true">Oct 28<span>th</span>, 2013</time>
+      
+
+
+    </p>
     
-  </header>
+      <div class="sharing">
+  
+  
+  
+</div>
 
-
-  <div class="entry-content"><p>使用maven已经好长一段时间了，部署项目一向有打包这一步。在新公司，之前的项目都是使用ant编译的，然后使用resin+apache运行，这个过程不需要用到mvn package。当前你也可以先打包再手动解压，之前我也是这么做的，下面说说另一种方法，我们只执行mvn compile就完成一个可部署的web目录。</p>
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/20/maven-compile-zi-ding-yi/" title="Previous Post: maven compile 自定义">&laquo; maven compile 自定义</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/10/20/maven-compile-zi-ding-yi/">Read on &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -177,7 +206,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/Winstar">@Winstar</a> on GitHub
@@ -209,6 +238,7 @@
 
   
 </aside>
+
 
     </div>
   </div>
